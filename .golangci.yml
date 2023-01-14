@@ -1,0 +1,35 @@
+run:
+  tests: true
+linters:
+  disable-all: true
+  enable:
+    - revive
+    - unused
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - typecheck
+    - unused
+    - gofmt
+    - misspell
+    - gochecknoinits
+    - unparam
+    - gosec
+    - goimports
+    - whitespace
+    - bodyclose
+    - gocyclo
+    - gocritic
+
+  fast: false
+
+linters-settings:
+  gocritic:
+    enabled-tags:
+      - diagnostic
+      - style
+      - performance
+      - experimental
+      - opinionated
