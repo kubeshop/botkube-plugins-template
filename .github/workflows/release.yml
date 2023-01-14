@@ -1,0 +1,67 @@
+name: Deploy Botkube plugins on GitHub Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version-file: 'go.mod'
+          cache: true
+
+      - name: Install GoReleaser
+        uses: goreleaser/goreleaser-action@v3
+        with:
+          install-only: true
+          version: latest
+
+      - name: Build plugins and generate plugins index.yaml
+        env:
+          PLUGIN_DOWNLOAD_URL_BASE_PATH: "https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}"
+        run: |
+          make build-plugins
+          make gen-plugin-index
+      - name: Release description
+        env:
+          PLUGIN_DOWNLOAD_URL_BASE_PATH: "https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}"
+        run: |
+          cat << EOF > release.md
+
+          Botkube Plugins **${GITHUB_REF#refs/tags/}** version are now available! :rocket:
+
+          To use plugins from this release, configure Botkube with:
+          EOF
+          cat << 'EOF' >> release.md
+
+          ```yaml
+          plugins:
+            repositories:
+          EOF
+          cat << EOF >> release.md
+              ${{ github.event.repository.name }}: ${PLUGIN_DOWNLOAD_URL_BASE_PATH}/plugins-index.yaml
+          EOF
+          cat << 'EOF' >> release.md
+          ```
+          EOF
+
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF#refs/tags/}" \
+          --notes-file release.md \
+          ./dist/source_* \
+          ./dist/executor_* \
+          ./plugins-index.yaml
