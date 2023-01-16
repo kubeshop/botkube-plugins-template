@@ -11,11 +11,11 @@ This project is [MIT Licensed](LICENSE) and accepts contributions via GitHub pul
 
 #### Develop Botkube plugins
 
-The example plugins in this repository were developed based on the official guides for the [executor](https://docs.botkube.io/next/plugin/custom-executor) and [source](https://docs.botkube.io/next/plugin/custom-source) plugins.
+The example plugins in this repository were developed based on the official guides for the [executor](https://docs.botkube.io/plugin/custom-executor) and [source](https://docs.botkube.io/plugin/custom-source) plugins.
 
-To test them locally, follow the [local testing](https://docs.botkube.io/next/plugin/local-testing) guide.
+To test them locally, follow the [local testing](https://docs.botkube.io/plugin/local-testing) guide.
 
-If you update this template repository, make sure that changes are reflected in the official [Template GitHub repository](https://docs.botkube.io/next/plugin/template-gh-repo) documentation.
+If you update this template repository, make sure that changes are reflected in the official [Template GitHub repository](https://docs.botkube.io/plugin/template-gh-repo) documentation.
 
 ## Making A Change
 
