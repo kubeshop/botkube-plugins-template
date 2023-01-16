@@ -7,5 +7,5 @@ Ticker is an example Botkube source plugin written in Go. It's not meant for pro
 The configuration should be specified in the YAML format. Such parameters are supported:
 
 ```yaml
-duration: 1m # Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
+interval: 1m # Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
 ```

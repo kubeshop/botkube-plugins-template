@@ -16,7 +16,7 @@ var version = "dev"
 
 // Config holds the source configuration.
 type Config struct {
-	Duration time.Duration
+	Interval time.Duration
 }
 
 // Ticker implements the Botkube executor plugin interface.
@@ -26,7 +26,7 @@ type Ticker struct{}
 func (Ticker) Metadata(_ context.Context) (api.MetadataOutput, error) {
 	return api.MetadataOutput{
 		Version:     version,
-		Description: "Emits an event each time the configured time duration elapses.",
+		Description: "Emits an event at a specified interval",
 	}, nil
 }
 
@@ -37,7 +37,7 @@ func (Ticker) Stream(ctx context.Context, in source.StreamInput) (source.StreamO
 		return source.StreamOutput{}, err
 	}
 
-	ticker := time.NewTicker(cfg.Duration)
+	ticker := time.NewTicker(cfg.Interval)
 	out := source.StreamOutput{
 		Output: make(chan []byte),
 	}
@@ -69,7 +69,7 @@ func main() {
 func mergeConfigs(configs []*source.Config) (Config, error) {
 	// default config
 	finalCfg := Config{
-		Duration: time.Minute,
+		Interval: time.Minute,
 	}
 
 	for _, inputCfg := range configs {
@@ -79,8 +79,8 @@ func mergeConfigs(configs []*source.Config) (Config, error) {
 			return Config{}, fmt.Errorf("while unmarshalling YAML config: %w", err)
 		}
 
-		if cfg.Duration != 0 {
-			finalCfg.Duration = cfg.Duration
+		if cfg.Interval != 0 {
+			finalCfg.Interval = cfg.Interval
 		}
 	}
 

@@ -7,5 +7,5 @@ Echo is an example Botkube executor plugin written in Go. It's not meant for pro
 The configuration should be specified in the YAML format. Such parameters are supported:
 
 ```yaml
-changeResponseToUpperCase: true # Default is 'false'.
+transformResponseToUpperCase: true # Default is 'false'.
 ```

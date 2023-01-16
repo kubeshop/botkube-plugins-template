@@ -16,7 +16,7 @@ var version = "dev"
 
 // Config holds the executor configuration.
 type Config struct {
-	ChangeResponseToUpperCase *bool `yaml:"changeResponseToUpperCase,omitempty"`
+	TransformResponseToUpperCase *bool `yaml:"transformResponseToUpperCase,omitempty"`
 }
 
 // EchoExecutor implements the Botkube executor plugin interface.
@@ -38,7 +38,7 @@ func (EchoExecutor) Execute(_ context.Context, in executor.ExecuteInput) (execut
 	}
 
 	response := in.Command
-	if cfg.ChangeResponseToUpperCase != nil && *cfg.ChangeResponseToUpperCase {
+	if cfg.TransformResponseToUpperCase != nil && *cfg.TransformResponseToUpperCase {
 		response = strings.ToUpper(response)
 	}
 
@@ -65,10 +65,10 @@ func mergeConfigs(configs []*executor.Config) (Config, error) {
 		if err != nil {
 			return Config{}, fmt.Errorf("while unmarshalling YAML config: %w", err)
 		}
-		if cfg.ChangeResponseToUpperCase == nil {
+		if cfg.TransformResponseToUpperCase == nil {
 			continue
 		}
-		finalCfg.ChangeResponseToUpperCase = cfg.ChangeResponseToUpperCase
+		finalCfg.TransformResponseToUpperCase = cfg.TransformResponseToUpperCase
 	}
 
 	return finalCfg, nil

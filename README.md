@@ -5,9 +5,9 @@ This repository shows the example Botkube [source](https://docs.botkube.io/archi
 It is intended as a template repository to start developing Botkube plugins in Go. Repository contains:
 
 - The [`echo`](cmd/echo/main.go) executor that sends back the command that was specified,
-- The [`ticker`](cmd/ticker/main.go) source that emits an event each time the configured time duration elapses,
+- The [`ticker`](cmd/ticker/main.go) source that emits an event at a specified interval,
 
-To learn more, see the [tutorial on how to use this template repository](https://docs.botkube.io/next/plugin/template.md).
+To learn more, see the [tutorial on how to use this template repository](https://docs.botkube.io/plugin/template.md).
 
 ## Requirements
 
@@ -18,4 +18,4 @@ To learn more, see the [tutorial on how to use this template repository](https:/
 ## Development
 
 1. Clone the repository.
-2. Follow the [local testing guide](https://docs.botkube.io/next/plugin/local-testing).
+2. Follow the [local testing guide](https://docs.botkube.io/plugin/local-testing).
