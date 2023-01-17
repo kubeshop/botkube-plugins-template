@@ -12,7 +12,7 @@ It is intended as a template repository to start developing Botkube plugins in G
 	- that updates [GitHub Pages](.github/workflows/pages-release.yml) with plugin binaries and index file each time a new tag is pushed.
 		- See: https://kubeshop.github.io/botkube-plugins-template/
 
-To learn more, see the [tutorial on how to use this template repository](https://docs.botkube.io/plugin/template.md).
+To learn more, see the [tutorial on how to use this template repository](https://docs.botkube.io/plugin/quick-start).
 
 ## Requirements
 
