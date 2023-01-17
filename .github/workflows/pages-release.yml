@@ -1,0 +1,97 @@
+name: Deploy Botkube plugins to GitHub Pages
+
+on:
+  push:
+    tags:
+      - "*"
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  # Single deploy job since we're just deploying
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Pages
+        uses: actions/configure-pages@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version-file: "go.mod"
+          cache: true
+
+      - name: Build plugins binaries
+        uses: goreleaser/goreleaser-action@v3
+        with:
+          version: latest
+          args: build --rm-dist
+
+      - name: Generate plugins index.yaml
+        env:
+          PLUGIN_DOWNLOAD_URL_BASE_PATH: "https://${{github.repository_owner}}.github.io/${{ github.event.repository.name }}"
+        run: |
+          go run github.com/kubeshop/botkube/hack -binaries-path "./dist"
+      - name: Release description
+        env:
+          PLUGIN_DOWNLOAD_URL_BASE_PATH: "https://${{github.repository_owner}}.github.io/${{ github.event.repository.name }}"
+        run: |
+          cat << EOF > README.md
+
+          Botkube Plugins **${GITHUB_REF#refs/tags/}** version are now available! :rocket:
+
+          To use plugins from this release, configure Botkube with:
+          EOF
+          cat << 'EOF' >> README.md
+
+          ```yaml
+          plugins:
+            repositories:
+          EOF
+          cat << EOF >> README.md
+              ${{ github.event.repository.name }}: ${PLUGIN_DOWNLOAD_URL_BASE_PATH}/plugins-index.yaml
+          EOF
+          cat << 'EOF' >> README.md
+          ```
+          EOF
+
+      - name: Render Markdown
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            /markdown \
+            -f text="$(cat ./README.md)" > index.html
+
+      - name: Publish GitHub release
+        run: |
+          mkdir public
+          mv dist/executor_* public/
+          mv dist/source_* public/
+          mv plugins-index.yaml public/
+          mv index.html public/
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: public
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
