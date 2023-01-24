@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"log"
 	"text/template"
 
 	"github.com/hashicorp/go-plugin"
@@ -97,7 +98,26 @@ func (e *GHExecutor) Execute(ctx context.Context, in executor.ExecuteInput) (exe
 	}, nil
 }
 
+var ghBinaryDownloadLinks = map[string]api.Dependency{
+	// Links source: https://github.com/cli/cli/releases/tag/v2.21.2
+	"gh": {
+		URLs: map[string]string{
+			// Using go-getter syntax to unwrap the underlying directory structure.
+			// Read more on https://github.com/hashicorp/go-getter#subdirectories
+			"darwin/amd64": "https://github.com/cli/cli/releases/download/v2.21.2/gh_2.21.2_macOS_amd64.tar.gz//gh_2.21.2_macOS_amd64/bin",
+			"linux/amd64":  "https://github.com/cli/cli/releases/download/v2.21.2/gh_2.21.2_linux_amd64.tar.gz//gh_2.21.2_linux_amd64/bin",
+			"linux/arm64":  "https://github.com/cli/cli/releases/download/v2.21.2/gh_2.21.2_linux_arm64.tar.gz//gh_2.21.2_linux_arm64/bin",
+			"linux/386":    "https://github.com/cli/cli/releases/download/v2.21.2/gh_2.21.2_linux_386.tar.gz//gh_2.21.2_linux_386/bin",
+		},
+	},
+}
+
 func main() {
+	err := pluginx.DownloadDependencies(ghBinaryDownloadLinks)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	executor.Serve(map[string]plugin.Plugin{
 		pluginName: &executor.Plugin{
 			Executor: &GHExecutor{},
