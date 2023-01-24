@@ -3,14 +3,9 @@ package main
 import (
 	"bytes"
 	"context"
-	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
 	"text/template"
 
-	"github.com/cli/go-gh"
-	ghapi "github.com/cli/go-gh/pkg/api"
 	"github.com/hashicorp/go-plugin"
 	"github.com/kubeshop/botkube/pkg/api"
 	"github.com/kubeshop/botkube/pkg/api/executor"
@@ -111,51 +106,9 @@ func main() {
 }
 
 func createGitHubIssue(cfg Config, title, mdBody string) (string, error) {
-	client, err := gh.HTTPClient(&ghapi.ClientOptions{
-		AuthToken: cfg.GitHub.Token,
-	})
-	if err != nil {
-		return "", err
-	}
+	cmd := fmt.Sprintf(`GH_TOKEN=%s gh issue create --title %q --body '%s' --label bug -R %s`, cfg.GitHub.Token, title, mdBody, cfg.GitHub.Repository)
 
-	url := fmt.Sprintf("%s/repos/%s/issues", gitHubAPI, cfg.GitHub.Repository)
-	body := struct {
-		Title  string   `json:"title"`
-		Body   string   `json:"body"`
-		Labels []string `json:"labels"`
-	}{
-		Title:  title,
-		Body:   mdBody,
-		Labels: []string{"bug"},
-	}
-
-	out, err := json.Marshal(body)
-	if err != nil {
-		return "", fmt.Errorf("while marshaling request body: %w", err)
-	}
-	rawResp, err := client.Post(url, "application/vnd.github+json", bytes.NewReader(out))
-	if err != nil {
-		return "", fmt.Errorf("while creating an issue: %w", err)
-	}
-	defer rawResp.Body.Close()
-
-	if rawResp.StatusCode != http.StatusCreated {
-		return "", fmt.Errorf("got unexpected status code, got %v, expected %v", rawResp.StatusCode, http.StatusCreated)
-	}
-
-	resp := struct {
-		URL string `json:"html_url"`
-	}{}
-	rawBody, err := io.ReadAll(rawResp.Body)
-	if err != nil {
-		return "", fmt.Errorf("while reading body: %w", err)
-	}
-	err = json.Unmarshal(rawBody, &resp)
-	if err != nil {
-		return "", fmt.Errorf("while unmarshaling response: %w", err)
-	}
-
-	return resp.URL, nil
+	return pluginx.ExecuteCommand(context.Background(), cmd)
 }
 
 // IssueDetails holds all available information about a given issue.
