@@ -5,11 +5,10 @@ go 1.19
 require (
 	github.com/hashicorp/go-plugin v1.4.6
 	github.com/kubeshop/botkube v0.17.0
-	gopkg.in/yaml.v3 v3.0.1
 )
 
 // Remove after merging: https://github.com/kubeshop/botkube/pull/951
-replace github.com/kubeshop/botkube v0.17.0 => github.com/mszostok/botkube v0.12.5-0.20230124234207-f9070a8fbdaa
+replace github.com/kubeshop/botkube v0.17.0 => github.com/mszostok/botkube v0.12.5-0.20230125193151-2777f11fd327
 
 require (
 	cloud.google.com/go v0.105.0 // indirect
@@ -32,6 +31,7 @@ require (
 	github.com/evanphx/json-patch v5.6.0+incompatible // indirect
 	github.com/exponent-io/jsonpath v0.0.0-20151013193312-d6023ce2651d // indirect
 	github.com/fatih/color v1.13.0 // indirect
+	github.com/fatih/structs v1.1.0 // indirect
 	github.com/fvbommel/sortorder v1.0.1 // indirect
 	github.com/go-errors/errors v1.0.1 // indirect
 	github.com/go-logr/logr v1.2.3 // indirect
@@ -115,6 +115,7 @@ require (
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 	k8s.io/api v0.25.4 // indirect
 	k8s.io/apimachinery v0.25.4 // indirect
 	k8s.io/cli-runtime v0.25.4 // indirect

@@ -8,7 +8,7 @@ import (
 	"github.com/hashicorp/go-plugin"
 	"github.com/kubeshop/botkube/pkg/api"
 	"github.com/kubeshop/botkube/pkg/api/source"
-	"gopkg.in/yaml.v3"
+	"github.com/kubeshop/botkube/pkg/pluginx"
 )
 
 // version is set via ldflags by GoReleaser.
@@ -16,7 +16,7 @@ var version = "dev"
 
 // Config holds the source configuration.
 type Config struct {
-	Interval time.Duration
+	Interval time.Duration `yaml:"interval,omitempty"`
 }
 
 // Ticker implements the Botkube executor plugin interface.
@@ -68,21 +68,14 @@ func main() {
 // the last one that was specified wins :)
 func mergeConfigs(configs []*source.Config) (Config, error) {
 	// default config
-	finalCfg := Config{
+	defaults := Config{
 		Interval: time.Minute,
 	}
 
-	for _, inputCfg := range configs {
-		var cfg Config
-		err := yaml.Unmarshal(inputCfg.RawYAML, &cfg)
-		if err != nil {
-			return Config{}, fmt.Errorf("while unmarshalling YAML config: %w", err)
-		}
-
-		if cfg.Interval != 0 {
-			finalCfg.Interval = cfg.Interval
-		}
+	var cfg Config
+	err := pluginx.MergeSourceConfigsWithDefaults(defaults, configs, &cfg)
+	if err != nil {
+		return Config{}, fmt.Errorf("while parsing input configuration: %w", err)
 	}
-
-	return finalCfg, nil
+	return cfg, nil
 }

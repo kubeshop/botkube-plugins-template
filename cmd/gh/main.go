@@ -133,9 +133,13 @@ func main() {
 }
 
 func createGitHubIssue(cfg Config, title, mdBody string) (string, error) {
-	cmd := fmt.Sprintf(`GH_TOKEN=%s gh issue create --title %q --body '%s' --label bug -R %s`, cfg.GitHub.Token, title, mdBody, cfg.GitHub.Repository)
+	cmd := fmt.Sprintf("gh issue create --title %q --body '%s' --label bug -R %s", title, mdBody, cfg.GitHub.Repository)
 
-	return pluginx.ExecuteCommand(context.Background(), cmd)
+	envs := map[string]string{
+		"GH_TOKEN": cfg.GitHub.Token,
+	}
+
+	return pluginx.ExecuteCommandWithEnvs(context.Background(), cmd, envs)
 }
 
 // IssueDetails holds all available information about a given issue.
