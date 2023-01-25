@@ -17,7 +17,6 @@ const (
 	pluginName       = "gh"
 	logsTailLines    = 150
 	defaultNamespace = "default"
-	gitHubAPI        = "https://api.github.com"
 )
 
 // version is set via ldflags by GoReleaser.
@@ -53,7 +52,7 @@ type GHExecutor struct{}
 func (*GHExecutor) Metadata(context.Context) (api.MetadataOutput, error) {
 	return api.MetadataOutput{
 		Version:     version,
-		Description: "GitHub creates an issue on GitHub for a related Kubernetes resource.",
+		Description: "GH creates an issue on GitHub for a related Kubernetes resource.",
 	}, nil
 }
 
@@ -98,7 +97,7 @@ func (e *GHExecutor) Execute(ctx context.Context, in executor.ExecuteInput) (exe
 	}, nil
 }
 
-var ghBinaryDownloadLinks = map[string]api.Dependency{
+var depsDownloadLinks = map[string]api.Dependency{
 	// Links source: https://github.com/cli/cli/releases/tag/v2.21.2
 	"gh": {
 		URLs: map[string]string{
@@ -110,10 +109,18 @@ var ghBinaryDownloadLinks = map[string]api.Dependency{
 			"linux/386":    "https://github.com/cli/cli/releases/download/v2.21.2/gh_2.21.2_linux_386.tar.gz//gh_2.21.2_linux_386/bin",
 		},
 	},
+	"kubectl": {
+		URLs: map[string]string{
+			"darwin/amd64": "https://dl.k8s.io/release/v1.26.0/bin/darwin/amd64/kubectl",
+			"linux/amd64":  "https://dl.k8s.io/release/v1.26.0/bin/linux/amd64/kubectl",
+			"linux/arm64":  "https://dl.k8s.io/release/v1.26.0/bin/linux/arm64/kubectl",
+			"linux/386":    "https://dl.k8s.io/release/v1.26.0/bin/linux/386/kubectl",
+		},
+	},
 }
 
 func main() {
-	err := pluginx.DownloadDependencies(ghBinaryDownloadLinks)
+	err := pluginx.DownloadDependencies(depsDownloadLinks)
 	if err != nil {
 		log.Fatal(err)
 	}
