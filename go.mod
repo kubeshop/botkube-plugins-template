@@ -4,11 +4,8 @@ go 1.19
 
 require (
 	github.com/hashicorp/go-plugin v1.4.6
-	github.com/kubeshop/botkube v0.17.0
+	github.com/kubeshop/botkube v0.13.1-0.20230126160834-7d26b6da7b8d
 )
-
-// Remove after merging: https://github.com/kubeshop/botkube/pull/951
-replace github.com/kubeshop/botkube v0.17.0 => github.com/mszostok/botkube v0.12.5-0.20230125193151-2777f11fd327
 
 require (
 	cloud.google.com/go v0.105.0 // indirect
