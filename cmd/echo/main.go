@@ -8,7 +8,7 @@ import (
 	"github.com/hashicorp/go-plugin"
 	"github.com/kubeshop/botkube/pkg/api"
 	"github.com/kubeshop/botkube/pkg/api/executor"
-	"gopkg.in/yaml.v3"
+	"github.com/kubeshop/botkube/pkg/pluginx"
 )
 
 // version is set via ldflags by GoReleaser.
@@ -32,7 +32,8 @@ func (EchoExecutor) Metadata(context.Context) (api.MetadataOutput, error) {
 
 // Execute returns a given command as a response.
 func (EchoExecutor) Execute(_ context.Context, in executor.ExecuteInput) (executor.ExecuteOutput, error) {
-	cfg, err := mergeConfigs(in.Configs)
+	var cfg Config
+	err := pluginx.MergeExecutorConfigs(in.Configs, &cfg)
 	if err != nil {
 		return executor.ExecuteOutput{}, err
 	}
@@ -53,23 +54,4 @@ func main() {
 			Executor: &EchoExecutor{},
 		},
 	})
-}
-
-// mergeConfigs merges all input configuration. In our case we don't have complex merge strategy,
-// the last one that was specified wins :)
-func mergeConfigs(configs []*executor.Config) (Config, error) {
-	finalCfg := Config{}
-	for _, inputCfg := range configs {
-		var cfg Config
-		err := yaml.Unmarshal(inputCfg.RawYAML, &cfg)
-		if err != nil {
-			return Config{}, fmt.Errorf("while unmarshalling YAML config: %w", err)
-		}
-		if cfg.TransformResponseToUpperCase == nil {
-			continue
-		}
-		finalCfg.TransformResponseToUpperCase = cfg.TransformResponseToUpperCase
-	}
-
-	return finalCfg, nil
 }
