@@ -50,7 +50,8 @@ jobs:
             repositories:
           EOF
           cat << EOF >> release.md
-              ${{ github.event.repository.name }}: ${PLUGIN_DOWNLOAD_URL_BASE_PATH}/plugins-index.yaml
+              ${{ github.event.repository.name }}:
+                url: ${PLUGIN_DOWNLOAD_URL_BASE_PATH}/plugins-index.yaml
           EOF
           cat << 'EOF' >> release.md
           ```
