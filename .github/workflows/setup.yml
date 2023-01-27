@@ -1,0 +1,43 @@
+name: Setting up your repository
+
+on:
+  # run when branch created (repo generated from template)
+  create:
+
+permissions:
+  contents: write
+
+# only keep the latest run of this workflow
+concurrency:
+  group: first-time-setup
+  cancel-in-progress: true
+
+jobs:
+  first-time-setup:
+    # ensure run only once, when repo generated
+    if: github.run_number == 1
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set git 'user.name' and 'user.email'
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Remove unneeded files
+        run: rm -f LICENSE CODE_OF_CONDUCT.md SECURITY.md .github/CODEOWNERS CONTRIBUTING.md
+
+      - name: Update URLs
+        run: |
+          sed -i "s/kubeshop/${{ github.repository_owner }}/g" README.md
+          sed -i "s/botkube-plugins-template/${{ github.event.repository.name }}/g" README.md
+
+      - name: Commit changes
+        run: |
+          git add -A
+          git commit -m "Setup newly created repository"
+          git push
