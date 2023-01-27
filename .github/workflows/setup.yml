@@ -39,5 +39,5 @@ jobs:
       - name: Commit changes
         run: |
           git add -A
-          git commit -m "Initial repository setup"
+          git commit -m "Setup newly created repository"
           git push
