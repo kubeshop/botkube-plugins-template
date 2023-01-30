@@ -8,7 +8,12 @@ import (
 	"github.com/hashicorp/go-plugin"
 	"github.com/kubeshop/botkube/pkg/api"
 	"github.com/kubeshop/botkube/pkg/api/executor"
+	"github.com/kubeshop/botkube/pkg/bot/interactive"
 	"github.com/kubeshop/botkube/pkg/pluginx"
+)
+
+const (
+	description = "Echo sends back the command that was specified."
 )
 
 // version is set via ldflags by GoReleaser.
@@ -26,7 +31,7 @@ type EchoExecutor struct{}
 func (EchoExecutor) Metadata(context.Context) (api.MetadataOutput, error) {
 	return api.MetadataOutput{
 		Version:     version,
-		Description: "Echo sends back the command that was specified.",
+		Description: description,
 	}, nil
 }
 
@@ -45,6 +50,17 @@ func (EchoExecutor) Execute(_ context.Context, in executor.ExecuteInput) (execut
 
 	return executor.ExecuteOutput{
 		Data: fmt.Sprintf("Echo: %s", response),
+	}, nil
+}
+
+// Help returns help message
+func (EchoExecutor) Help(ctx context.Context) (interactive.Message, error) {
+	return interactive.Message{
+		Base: interactive.Base{
+			Body: interactive.Body{
+				Plaintext: description,
+			},
+		},
 	}, nil
 }
 
