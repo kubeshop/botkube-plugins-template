@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/hashicorp/go-plugin v1.4.6
-	github.com/kubeshop/botkube v0.13.1-0.20230126160834-7d26b6da7b8d
+	github.com/kubeshop/botkube v0.13.1-0.20230131101027-98965ac88e9f
 )
 
 require (
