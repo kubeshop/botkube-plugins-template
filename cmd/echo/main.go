@@ -54,7 +54,7 @@ func (EchoExecutor) Execute(_ context.Context, in executor.ExecuteInput) (execut
 }
 
 // Help returns help message
-func (EchoExecutor) Help(ctx context.Context) (interactive.Message, error) {
+func (EchoExecutor) Help(context.Context) (interactive.Message, error) {
 	return interactive.Message{
 		Base: interactive.Base{
 			Body: interactive.Body{
