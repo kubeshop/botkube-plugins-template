@@ -2,19 +2,16 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"strings"
 
+	"github.com/MakeNowJust/heredoc"
 	"github.com/hashicorp/go-plugin"
 	"github.com/kubeshop/botkube/pkg/api"
 	"github.com/kubeshop/botkube/pkg/api/executor"
-	"github.com/kubeshop/botkube/pkg/bot/interactive"
 	"github.com/kubeshop/botkube/pkg/pluginx"
 )
 
-const (
-	description = "Echo sends back the command that was specified."
-)
+const description = "Echo sends back the command that was specified."
 
 // version is set via ldflags by GoReleaser.
 var version = "dev"
@@ -32,6 +29,25 @@ func (EchoExecutor) Metadata(context.Context) (api.MetadataOutput, error) {
 	return api.MetadataOutput{
 		Version:     version,
 		Description: description,
+		JSONSchema: api.JSONSchema{
+			Value: heredoc.Docf(`{
+			  "$schema": "http://json-schema.org/draft-04/schema#",
+			  "title": "echo",
+			  "description": "%s",
+			  "type": "object",
+			  "properties": {
+			    "formatOptions": {
+			      "description": "Options to format echoed string",
+			      "type": "array",
+			      "items": {
+			        "type": "string",
+			        "enum": [ "bold", "italic" ]
+			      }
+			    }
+			  },
+			  "additionalProperties": false
+			}`, description),
+		},
 	}, nil
 }
 
@@ -49,16 +65,22 @@ func (EchoExecutor) Execute(_ context.Context, in executor.ExecuteInput) (execut
 	}
 
 	return executor.ExecuteOutput{
-		Data: fmt.Sprintf("Echo: %s", response),
+		Message: api.NewCodeBlockMessage(response, true),
 	}, nil
 }
 
-// Help returns help message
-func (EchoExecutor) Help(context.Context) (interactive.Message, error) {
-	return interactive.Message{
-		Base: interactive.Base{
-			Body: interactive.Body{
-				Plaintext: description,
+func (EchoExecutor) Help(context.Context) (api.Message, error) {
+	btnBuilder := api.NewMessageButtonBuilder()
+	return api.Message{
+		Sections: []api.Section{
+			{
+				Base: api.Base{
+					Header:      "Run `echo` commands",
+					Description: description,
+				},
+				Buttons: []api.Button{
+					btnBuilder.ForCommandWithDescCmd("Run", "echo 'hello world'"),
+				},
 			},
 		},
 	}, nil

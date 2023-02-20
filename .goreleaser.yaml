@@ -19,6 +19,16 @@ builds:
     goarm: &goarm
       - 7
 
+  - id: msg
+    main: cmd/msg/main.go
+    binary: executor_msg_{{ .Os }}_{{ .Arch }}
+
+    no_unique_dist_dir: true
+    env: *env
+    goos: *goos
+    goarch: *goarch
+    goarm: *goarm
+
   - id: ticker
     main: cmd/ticker/main.go
     binary: source_ticker_{{ .Os }}_{{ .Arch }}
