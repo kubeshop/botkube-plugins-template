@@ -6,6 +6,7 @@ It is intended as a template repository to start developing Botkube plugins in G
 
 - The [`echo`](cmd/echo/main.go) executor that sends back the command that was specified,
 - The [`ticker`](cmd/ticker/main.go) source that emits an event each time the configured time duration elapses,
+- The [`msg`](cmd/msg/main.go) executor that showcases the interactive message capabilities,
 - The release [GitHub Action](https://github.com/features/actions) jobs:
 	- that creates [GitHub release](.github/workflows/release.yml) with plugin binaries and index file each time a new tag is pushed.
 		- See: https://github.com/kubeshop/botkube-plugins-template/releases/latest
