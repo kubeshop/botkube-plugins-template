@@ -52,6 +52,8 @@ func (EchoExecutor) Metadata(context.Context) (api.MetadataOutput, error) {
 }
 
 // Execute returns a given command as a response.
+//
+//nolint:gocritic  //hugeParam: in is heavy (80 bytes); consider passing it by pointer
 func (EchoExecutor) Execute(_ context.Context, in executor.ExecuteInput) (executor.ExecuteOutput, error) {
 	var cfg Config
 	err := pluginx.MergeExecutorConfigs(in.Configs, &cfg)

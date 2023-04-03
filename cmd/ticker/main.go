@@ -39,7 +39,7 @@ func (Ticker) Stream(ctx context.Context, in source.StreamInput) (source.StreamO
 
 	ticker := time.NewTicker(cfg.Interval)
 	out := source.StreamOutput{
-		Output: make(chan []byte),
+		Event: make(chan source.Event),
 	}
 
 	go func() {
@@ -48,7 +48,9 @@ func (Ticker) Stream(ctx context.Context, in source.StreamInput) (source.StreamO
 			case <-ctx.Done():
 				ticker.Stop()
 			case <-ticker.C:
-				out.Output <- []byte("Ticker Event")
+				out.Event <- source.Event{
+					Message: api.NewPlaintextMessage("Ticker Event", true),
+				}
 			}
 		}
 	}()
