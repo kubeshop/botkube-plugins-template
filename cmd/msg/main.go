@@ -30,6 +30,8 @@ func (MsgExecutor) Metadata(context.Context) (api.MetadataOutput, error) {
 }
 
 // Execute returns a given command as a response.
+//
+//nolint:gocritic  //hugeParam: in is heavy (80 bytes); consider passing it by pointer
 func (MsgExecutor) Execute(_ context.Context, in executor.ExecuteInput) (executor.ExecuteOutput, error) {
 	if !in.Context.IsInteractivitySupported {
 		return executor.ExecuteOutput{
