@@ -5,7 +5,8 @@ This repository shows the example Botkube [source](https://docs.botkube.io/archi
 It is intended as a template repository to start developing Botkube plugins in Go. Repository contains:
 
 - The [`echo`](cmd/echo/main.go) executor that sends back the command that was specified,
-- The [`ticker`](cmd/ticker/main.go) source that emits an event each time the configured time duration elapses,
+- The [`ticker`](cmd/ticker/main.go) source that emits an event each time the configured time duration elapses
+- The [`forwarder`](cmd/forwarder/main.go) source that echos the message sent as an incoming webhook request,
 - The [`msg`](cmd/msg/main.go) executor that showcases the interactive message capabilities,
 - The release [GitHub Action](https://github.com/features/actions) jobs:
 	- that creates [GitHub release](.github/workflows/release.yml) with plugin binaries and index file each time a new tag is pushed.

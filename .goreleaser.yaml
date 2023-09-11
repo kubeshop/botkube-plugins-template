@@ -39,6 +39,16 @@ builds:
     goarch: *goarch
     goarm: *goarm
 
+  - id: forwarder
+    main: cmd/forwarder/main.go
+    binary: source_forwarder_{{ .Os }}_{{ .Arch }}
+
+    no_unique_dist_dir: true
+    env: *env
+    goos: *goos
+    goarch: *goarch
+    goarm: *goarm
+
 snapshot:
   name_template: 'v{{ .Version }}'
 
