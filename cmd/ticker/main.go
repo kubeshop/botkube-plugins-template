@@ -11,6 +11,8 @@ import (
 	"github.com/kubeshop/botkube/pkg/pluginx"
 )
 
+var _ source.Source = (*Ticker)(nil)
+
 // version is set via ldflags by GoReleaser.
 var version = "dev"
 
@@ -20,7 +22,10 @@ type Config struct {
 }
 
 // Ticker implements the Botkube executor plugin interface.
-type Ticker struct{}
+type Ticker struct {
+	// specify that the source doesn't handle external requests
+	source.HandleExternalRequestUnimplemented
+}
 
 // Metadata returns details about the Ticker plugin.
 func (Ticker) Metadata(_ context.Context) (api.MetadataOutput, error) {
@@ -31,6 +36,8 @@ func (Ticker) Metadata(_ context.Context) (api.MetadataOutput, error) {
 }
 
 // Stream sends an event after configured time duration.
+//
+//nolint:gocritic // hugeParam: in is heavy (120 bytes); consider passing it by pointer
 func (Ticker) Stream(ctx context.Context, in source.StreamInput) (source.StreamOutput, error) {
 	cfg, err := mergeConfigs(in.Configs)
 	if err != nil {
